@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+      integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+
+    {% if title %}
+    <title>Shop Apple Watch - {{ title }}</title>
+    {% else %}
+    <title>Shop Apple Watch</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <!--************************** Header Section Starts *************************************** -->
+    <header>
+      <!-- logo -->
+      <a href="" class="logo">
+        <i class="fab fa-apple"></i>
+      </a>
+      <!-- navbar icon -->
+      <div id="menu" class="fas fa-bars"></div>
+      <!-- navbar -->
+      <nav class="navbar">
+        <ul>
+          <li><a href="/#home">home</a></li>
+          <li><a href="/#core">core features</a></li>
+          <li><a href="/#about">about</a></li>
+          <li><a href="/#features">accessories</a></li>
+          <li><a href="/store">store</a></li>
+
+          {% if current_user.is_authenticated %}
+          <li><a href="/orders">Orders</a></li>
+          <li><a href="/logout">Logout</a></li>
+          {% else %}
+          <li><a href="/login">Login/Register</a></li>
+          {% endif %}
+
+          <li><a href="/cart"><i class="fas fa-shopping-cart"></i></a></li>
+
+        </ul>
+      </nav>
+    </header>
+    <!--************************** Header Section Ends *************************************** -->
+
+    {% block content %} {% endblock %}
+
+
+
+
+
+		<!--************************** Contact Section Starts *************************************** -->
+		<section class="contact" id="contact">
+			<!-- form -->
+            <form method="POST" action="{{ url_for('contact') }}">
+                {{ cform.hidden_tag() }}
+                <input class="box" type="text" placeholder="Name" name="name" value="" required>
+                {% for error in cform.name.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            
+                <input class="box" type="email" placeholder="Email" name="email" value="" required>
+                {% for error in cform.email.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            
+                <input class="box" type="text" placeholder="Number" name="subject" value="" required>
+                {% for error in cform.subject.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            
+                <textarea cols="30" rows="10" placeholder="Message" name="message" required></textarea>
+                {% for error in cform.message.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            
+                <input type="submit" class="btn" value="Send Message">
+            </form>
+            
+            
+			<!-- content -->
+			<div class="content">
+				<h3>Need Help? Don't Forget to Contact With Us</h3>
+				<p>
+					Apple.com is a convenient place to purchase Apple products and
+					accessories from Apple and other manufacturers. You can buy online or
+					call (800) MY–APPLE(USA) (800–692–7753) or MY-APPLE(IN) (0008000401966)
+				</p>
+				<!-- icon 1 -->
+				<div class="icons">
+					<i class="fas fa-map-marker-alt"></i>
+					<p>India,</p>
+					<p>United States</p>
+				</div>
+				<!-- icon 2 -->
+				<div class="icons">
+					<i class="fas fa-globe"></i>
+					<p>www.apple.com</p>
+				</div>
+				<!-- icon 3 -->
+				<div class="icons">
+					<i class="fas fa-phone"></i>
+					<p>Apple Media Helpline  (408) 974–2042</p>
+				</div>
+			</div>
+		</section>
+		<!--************************** Contact Section Ends *************************************** -->
+
+
+
+
+
+
+
+    <!--************************** Footer Section Starts *************************************** -->
+    <div class="footer">
+      <h1 class="credit"> Qcart </h1>
+    </div>
+    <!--************************** Footer Section Ends *************************************** -->
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,143 @@
+{% extends "blayout.html" %}
+{% block content %}
+
+<section class="product" id="product">
+    <h1 class="heading">Store </h1>
+    <div class="box-container">
+
+
+    </div>
+</section>
+
+
+
+<script>
+
+const products = [
+    {
+        number:1,
+        id: 'p1',
+        heading: 'Apple Watch Series 7',
+        description: 'Just put on your Apple Watch and take off. Series 7 keeps all the things you care about front and center with its larger screen.',
+        price: 3999
+    },
+    {
+        number:2,
+        id: 'p2',
+        heading: 'Apple Watch SE',
+        description: 'Powerful features to help keep you connected, active, healthy, and safe. Advanced sensors to track all the ways you move and to measure your favorite workouts.',
+        price: 8000
+    },
+    {
+        number:3,
+        id: 'p3',
+        heading: 'Apple Watch Series 3',
+        description: 'Show your true colors with interchangeable bands. Show your true colors with interchangeable bands.',
+        price: 1999
+    }
+];
+
+
+
+
+product_box = document.querySelector('.box-container')
+text = ''
+products.forEach(p=>{
+    text += `
+    <!-- box ${p.id} -->
+        <div class="box" id="${p.number}">
+            <div class="image">
+                <img src="/static/img/w${p.number}.png" alt="">					</div>
+            <div class="content">
+                <h3>${p.heading}</h3>
+                <p>
+                    ${p.description}
+                </p>
+                <div class="price">from ₹ ${p.price}</div>
+                <div class="btncontainer-${p.number}">
+                    <button class="btn ${p.id}" id="${p.number}" style="margin-right: 20px;">add to cart</button>
+                </div>
+            </div>
+        </div>
+        `
+})
+product_box.innerHTML = text
+
+if (!localStorage.getItem('cart')) {
+    localStorage.setItem('cart', JSON.stringify([]));
+}
+
+cartbuttons = document.querySelectorAll('.btn')
+
+cartbuttons.forEach(product => {
+    product.addEventListener('click', (event) => {
+        current = event.target.id
+
+        if (!localStorage.getItem("cart")) {
+      localStorage.setItem("cart", JSON.stringify([]));
+    }
+
+        ls = JSON.parse(localStorage.getItem('cart'))
+        if (event.target.classList.contains('added')){
+            alert("Product is already in the cart")
+        }
+
+        if (!ls.includes(current) ){
+            // console.log(event.target.id)
+            const storedArray = JSON.parse(localStorage.getItem('cart'));
+            storedArray.push(event.target.id)
+                console.log(storedArray)
+            localStorage.setItem('cart', JSON.stringify(storedArray));
+
+
+        
+        }
+
+        render()
+    });
+});
+
+
+
+
+function render(){
+    JSON.parse(localStorage.getItem('cart')).forEach(e=>{
+        console.log(e)
+        temp_str = `.btncontainer-${e}`
+       tempcontainer=  document.querySelector(temp_str)
+
+    if (tempcontainer.querySelector('.checkout')==null){
+
+            // Create a new <a> tag
+                const checkoutAnchor = document.createElement('a');
+            checkoutAnchor.href = '#'; // Set href attribute as required
+            
+            // Create a new button element inside the <a> tag
+            const checkoutButton = document.createElement('button');
+            checkoutButton.innerText = 'Checkout';
+            checkoutAnchor.href = '/cart';
+            checkoutButton.classList.add('btn', 'checkout');
+            
+
+            // Append the button to the <a> tag
+            checkoutAnchor.appendChild(checkoutButton);
+            tempcontainer.innerHTML = ''
+            tempcontainer.appendChild(checkoutAnchor);
+
+    }
+
+
+    })
+
+}
+
+render()
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Your render function code here
+    render();
+});
+
+</script>
+
+{% endblock content %}

@@ -1,0 +1,341 @@
+{% extends "blayout.html" %}
+ {% block content %}
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<!-- Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  integrity="sha512-<hash>"
+  crossorigin="anonymous"
+/>
+<!-- Custom CSS -->
+<style>
+  .container1 {
+    width: 100vw;
+    height: 100vh;
+    margin-top: 100px;
+    margin-bottom: 200px;
+    padding-top: 20px;
+  }
+</style>
+<div class="container container1 py-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-1">
+        <div class="card-header">Your Cart</div>
+        <div class="items-content">
+          <div class="card-body">
+            <!-- Cart items -->
+            <div class="row">
+              <div class="col-md-4">
+                <img
+                  src="https://via.placeholder.com/150"
+                  alt="Product Image"
+                  class="img-fluid"
+                />
+              </div>
+              <div class="col-md-8">
+                <h5>Product Name</h5>
+                <p>Price: $10.00</p>
+                <p>Quantity: <input type="number" /></p>
+                <button class="btn btn-danger">Remove</button>
+              </div>
+            </div>
+            <!-- End Cart items -->
+          </div>
+          <hr />
+          <div class="card-body">
+            <!-- Cart items -->
+            <div class="row">
+              <div class="col-md-4">
+                <img
+                  src="https://via.placeholder.com/150"
+                  alt="Product Image"
+                  class="img-fluid"
+                />
+              </div>
+              <div class="col-md-6">
+                <h5>Product Name</h5>
+                <p>Price: $10.00</p>
+                <p>Quantity: <input type="number" /></p>
+                <button class="btn btn-danger">Remove</button>
+              </div>
+            </div>
+            <!-- End Cart items -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="order-summary">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Order Summary</div>
+          <div class="card-body">
+            <p id="totalItems">Total Items: <span id="total_items"> </span></p>
+            <p>Total Price: <span id="total_price"></span></p>
+            <!-- Checkout Button -->
+            <button
+              class="btn btn-primary btn-block"
+              data-bs-toggle="modal"
+              data-bs-target="#checkoutModal"
+            >
+              Checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div
+  class="modal fade"
+  id="checkoutModal"
+  tabindex="-1"
+  aria-labelledby="checkoutModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="checkoutModalLabel">Confirm Order</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">Are you sure you want to place this order?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="place-order">
+          Place Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="uid"> {{ user_id }} </div>
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+  const products = [
+    {
+      number: 1,
+      id: "p1",
+      heading: "Apple Watch Series 7",
+      description:
+        "Just put on your Apple Watch and take off. Series 7 keeps all the things you care about front and center with its larger screen.",
+      price: 3999,
+    },
+    {
+      number: 2,
+      id: "p2",
+      heading: "Apple Watch SE",
+      description:
+        "Powerful features to help keep you connected, active, healthy, and safe. Advanced sensors to track all the ways you move and to measure your favorite workouts.",
+      price: 8000,
+    },
+    {
+      number: 3,
+      id: "p3",
+      heading: "Apple Watch Series 3",
+      description:
+        "Show your true colors with interchangeable bands. Show your true colors with interchangeable bands.",
+      price: 1999,
+    },
+  ];
+  function populateItems() {
+    if (!localStorage.getItem("cart")) {
+      localStorage.setItem("cart", JSON.stringify([]));
+    }
+
+    const storedArray = JSON.parse(localStorage.getItem("cart"));
+    console.log(storedArray);
+    text = ``;
+
+    if (storedArray.length == 0) {
+      text += ` 
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-12">
+              <h5> Cart is Empty </h5>
+              <a href='/store'> <button class="btn btn-primary">Go to Store</button> </a>
+            </div>
+          </div>`;
+    }
+
+    storedArray.forEach((number, index) => {
+      text += ` 
+        <div class="card-body">
+          <!-- Cart items -->
+          <div class="row">
+            <div class="col-md-4">
+              <img src="/static/img/w${products[Number(number) - 1].number}.png"
+                alt="Product Image"
+                class="img-fluid"
+              />
+            </div>
+            <div class="col-md-8 cart-items">
+              <h5 id="product-title">${
+                products[Number(number) - 1].heading
+              }</h5>
+              <p id="product-price">Price: <span id='price'> ${
+                products[Number(number) - 1].price
+              } </span> </p>
+
+              <p id="product-qty">Quantity: <input type="number" value='1' id="qty"></p>
+              <button class="btn btn-danger"
+              onClick="removeItemAndUpdateLocalStorage(${index})"
+              >Remove</button>
+            </div>
+          </div>`;
+    });
+    document.querySelector(".items-content").innerHTML = text;
+
+    document.querySelectorAll("input#qty").forEach((e) => {
+      e.addEventListener("input", () => {
+        orderSummary();
+      });
+    });
+
+    orderSummary();
+  }
+  populateItems();
+
+  function orderSummary() {
+    if (!localStorage.getItem("cart")) {
+      localStorage.setItem("cart", JSON.stringify([]));
+    }
+    const storedArray = JSON.parse(localStorage.getItem("cart"));
+
+    if (storedArray.length === 0) {
+      document.getElementById("order-summary").innerHTML = `  
+     
+      <div class="card">
+        <div class="card-header">Order Summary</div>
+        <div class="card-body">
+          <p id="totalItems">Total Items: 0</p>
+          <p>Total Price: 00</p>
+          <!-- Checkout Button -->
+          <a href="/store">
+            
+          <button
+            class="btn btn-primary btn-block"
+          >
+            Store
+          </button>
+        </a>
+        </div>
+      </div>
+    
+`;
+      document.getElementById("order-summary").classList.add("col-md-8");
+    } else {
+      total_items = 0;
+      total_price = 0;
+
+      cartitems = document.querySelectorAll(".cart-items");
+      cartitems.forEach(function (cartItem) {
+        // Access the inner value of 'p.price'
+        const priceValue = Number(cartItem.querySelector("#price").innerText);
+
+        // Access the inner value of 'input#qty'
+        let quantityValue = Number(cartItem.querySelector("#qty").value);
+        if (quantityValue === "") {
+          quantityValue = 0;
+        }
+
+        total_items += quantityValue;
+        total_price += quantityValue * priceValue;
+
+        document.getElementById("total_items").innerText = total_items;
+        document.getElementById("total_price").innerText = total_price;
+      });
+    }
+  }
+  orderSummary();
+
+  function removeItemAndUpdateLocalStorage(index) {
+    console.log("remove item called", index);
+    // Retrieve the cart array from localStorage
+    const storedArray = JSON.parse(localStorage.getItem("cart"));
+
+    // Check if the storedArray is not null and index is valid
+    if (storedArray && index >= 0 && index < storedArray.length) {
+      // Remove the item at the specified index
+      storedArray.splice(index, 1);
+
+      // Save the updated array back to localStorage
+      localStorage.setItem("cart", JSON.stringify(storedArray));
+    }
+
+    populateItems();
+  }
+
+  const order = document.getElementById("place-order");
+  order.addEventListener("click", () => {
+    const data = {
+      items: document.getElementById("total_items").innerText,
+      prices: document.getElementById("total_price").innerText,
+      user_id: `{{ user_id }}`
+    };
+
+    rows = document.querySelectorAll(".row");
+    console.log(rows);
+    rows.forEach((row) => {
+      t = row.querySelector("#product-title").innerHTML;
+      q = row.querySelector("#qty").value;
+
+
+      data[t] = q;
+    });
+
+    console.log(data);
+
+    fetch("/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Response received:", data);
+        localStorage.setItem("cart", JSON.stringify([]));
+        window.location.href = '/orders';
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  });
+
+</script>
+
+{% endblock content %}
